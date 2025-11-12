@@ -262,7 +262,6 @@ const PrintableCVContent = React.forwardRef<HTMLDivElement, PrintableCVContentPr
           <div className="space-y-3">
             {data.languages.map((language) => (
               <div key={language.id} className="language-item flex items-center gap-3">
-                {language.flag && <span className="text-2xl">{language.flag}</span>}
                 <div>
                   <span className="font-medium text-gray-800">{language.name}</span>
                   <span className="text-gray-600 ml-2">- {language.level}</span>

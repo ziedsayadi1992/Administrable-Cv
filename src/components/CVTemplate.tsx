@@ -52,7 +52,11 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
     return data;
   }, [data]);
 
-  const displayData = translatedCV || safeData;
+ const displayData =
+  translatedCV && Object.keys(translatedCV).length > 0
+    ? translatedCV
+    : safeData;
+
 
   // ✅ NEW FIX: Handle template-to-template switching
   useEffect(() => {
@@ -193,6 +197,8 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
       </div>
     );
   }
+
+  console.log('✅ Rendering CVTemplate with data:', displayData);
 
   if (!displayData) {
     return (

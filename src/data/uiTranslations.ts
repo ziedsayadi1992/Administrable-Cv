@@ -24,6 +24,8 @@ export const uiTranslations: { [lang: string]: UITranslations } = {
     experiences: "Expériences",
     languages: "Langues",
     certifications: "Certifications",
+    customSections: "Sections Personnalisées",
+    sectionTitles: "Titres des Sections", // ✅ NEW
     
     // Actions
     addSkill: "Ajouter",
@@ -104,6 +106,8 @@ export const uiTranslations: { [lang: string]: UITranslations } = {
     experiences: "Experiences",
     languages: "Languages",
     certifications: "Certifications",
+    customSections: "Custom Sections",
+    sectionTitles: "Section Titles", // ✅ NEW
     
     // Actions
     addSkill: "Add",
@@ -184,6 +188,8 @@ export const uiTranslations: { [lang: string]: UITranslations } = {
     experiences: "الخبرات",
     languages: "اللغات",
     certifications: "الشهادات",
+    customSections: "أقسام مخصصة",
+    sectionTitles: "عناوين الأقسام", // ✅ NEW
     
     // Actions
     addSkill: "إضافة",
@@ -264,6 +270,8 @@ export const uiTranslations: { [lang: string]: UITranslations } = {
     experiences: "Erfahrungen",
     languages: "Sprachen",
     certifications: "Zertifizierungen",
+    customSections: "Benutzerdefinierte Abschnitte",
+    sectionTitles: "Abschnittstitel", // ✅ NEW
     
     // Actions
     addSkill: "Hinzufügen",
@@ -344,6 +352,8 @@ export const uiTranslations: { [lang: string]: UITranslations } = {
     experiences: "Experiencias",
     languages: "Idiomas",
     certifications: "Certificaciones",
+    customSections: "Secciones Personalizadas",
+    sectionTitles: "Títulos de Secciones", // ✅ NEW
     
     // Actions
     addSkill: "Agregar",

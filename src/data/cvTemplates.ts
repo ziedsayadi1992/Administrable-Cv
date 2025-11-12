@@ -14,7 +14,8 @@ export const CV_TEMPLATE_EN: CVData = {
     phone: '+1234567890',
     location: 'Your City, Country',
     github: 'github.com/yourusername',
-    linkedin: 'linkedin.com/in/yourprofile'
+    linkedin: 'linkedin.com/in/yourprofile',
+    fields: []
   },
   skills: [
     { id: generateId(), value: 'Project Management & Team Leadership' },
@@ -46,8 +47,8 @@ export const CV_TEMPLATE_EN: CVData = {
     }
   ],
   languages: [
-    { id: generateId(), name: 'English', flag: '', level: 'Native' },
-    { id: generateId(), name: 'Spanish', flag: '', level: 'Intermediate' }
+    { id: generateId(), name: 'English', level: 'Native' },
+    { id: generateId(), name: 'Spanish', level: 'Intermediate' }
   ],
   certifications: [
     { id: generateId(), name: 'Professional Certification', issuer: 'Certification Authority' }
@@ -77,7 +78,8 @@ export const CV_TEMPLATE_FR: CVData = {
     phone: '+33123456789',
     location: 'Votre Ville, Pays',
     github: 'github.com/votrenom',
-    linkedin: 'linkedin.com/in/votreprofil'
+    linkedin: 'linkedin.com/in/votreprofil',
+    fields: []
   },
   skills: [
     { id: generateId(), value: 'Gestion de Projet & Leadership d\'Équipe' },
@@ -109,8 +111,8 @@ export const CV_TEMPLATE_FR: CVData = {
     }
   ],
   languages: [
-    { id: generateId(), name: 'Français', flag: '', level: 'Langue maternelle' },
-    { id: generateId(), name: 'Anglais', flag: '', level: 'Courant' }
+    { id: generateId(), name: 'Français', level: 'Langue maternelle' },
+    { id: generateId(), name: 'Anglais', level: 'Courant' }
   ],
   certifications: [
     { id: generateId(), name: 'Certification Professionnelle', issuer: 'Autorité de Certification' }
@@ -142,7 +144,8 @@ export const CV_TEMPLATE_DE: CVData = {
     phone: '+491234567890',
     location: 'Ihre Stadt, Deutschland',
     github: 'github.com/ihrprofil',
-    linkedin: 'linkedin.com/in/ihrprofil'
+    linkedin: 'linkedin.com/in/ihrprofil',
+    fields: []  
   },
 
   skills: [
@@ -178,8 +181,8 @@ export const CV_TEMPLATE_DE: CVData = {
   ],
 
   languages: [
-    { id: generateId(), name: 'Deutsch', flag: '', level: 'Muttersprache' },
-    { id: generateId(), name: 'Englisch', flag: '', level: 'Fließend' }
+    { id: generateId(), name: 'Deutsch', level: 'Muttersprache' },
+    { id: generateId(), name: 'Englisch', level: 'Fließend' }
   ],
 
   certifications: [
@@ -227,7 +230,8 @@ export const CV_TEMPLATE_ES: CVData = {
     phone: '+341234567890',
     location: 'Tu Ciudad, España',
     github: 'github.com/tuusuario',
-    linkedin: 'linkedin.com/in/tuperfil'
+    linkedin: 'linkedin.com/in/tuperfil',
+    fields: []
   },
 
   skills: [
@@ -263,8 +267,8 @@ export const CV_TEMPLATE_ES: CVData = {
   ],
 
   languages: [
-    { id: generateId(), name: 'Español', flag: '', level: 'Nativo' },
-    { id: generateId(), name: 'Inglés', flag: '', level: 'Intermedio' }
+    { id: generateId(), name: 'Español', level: 'Nativo' },
+    { id: generateId(), name: 'Inglés', level: 'Intermedio' }
   ],
 
   certifications: [

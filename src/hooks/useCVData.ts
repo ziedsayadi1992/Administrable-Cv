@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { CV_DATA } from '../data/cvData';
 import type { CVData } from '../types';
 import { migrateLegacyData } from '../utils/cvHelpers';
+import { migrateCustomSections } from '../utils/customSectionsMigration'; // ✅ NEW IMPORT
 
 // Version for data migration
 const CV_DATA_VERSION = 2; // ✅ Increased version for ID migration
@@ -104,6 +105,9 @@ const loadFromStorage = (): CVData => {
     
     // ✅ Always migrate data to ensure IDs are present
     let migratedData = migrateLegacyData(parsed);
+    
+    // ✅ NEW: Migrate custom sections to ensure blocks arrays exist
+    migratedData = migrateCustomSections(migratedData);
     
     // Check version
     if (!parsed.version || parsed.version < CV_DATA_VERSION) {
@@ -251,7 +255,10 @@ export const useCVData = () => {
 
   const loadCVData = (newData: CVData) => {
     // ✅ Always migrate loaded data
-    const migratedData = migrateLegacyData(newData);
+    let migratedData = migrateLegacyData(newData);
+    
+    // ✅ NEW: Also migrate custom sections
+    migratedData = migrateCustomSections(migratedData);
     
     // Try to validate, but be lenient
     if (!validateCVData(migratedData)) {

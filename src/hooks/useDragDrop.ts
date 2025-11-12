@@ -36,7 +36,8 @@ export const useDragDrop = () => {
     event: DragEndEvent,
     data: CVData,
     onUpdate: (data: CVData) => void,
-    section: 'contact' | 'skills' | 'experiences' | 'customSection'
+    section: 'contact' | 'skills' | 'experiences' | 'customSection',
+    sectionId?: string  // ✅ NEW: Optional sectionId for custom sections
   ) => {
     const { active, over } = event;
     setActiveId(null);
@@ -68,6 +69,20 @@ export const useDragDrop = () => {
         const newIndex = newData.experiences.findIndex((e) => e.id === over.id);
         if (oldIndex !== -1 && newIndex !== -1) {
           newData.experiences = arrayMove(newData.experiences, oldIndex, newIndex);
+        }
+        break;
+      }
+      // ✅ NEW: Handle custom section blocks
+      case 'customSection': {
+        if (sectionId) {
+          const customSection = newData.customSections.find(s => s.id === sectionId);
+          if (customSection) {
+            const oldIndex = customSection.blocks.findIndex((b) => b.id === active.id);
+            const newIndex = customSection.blocks.findIndex((b) => b.id === over.id);
+            if (oldIndex !== -1 && newIndex !== -1) {
+              customSection.blocks = arrayMove(customSection.blocks, oldIndex, newIndex);
+            }
+          }
         }
         break;
       }

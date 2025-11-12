@@ -52,7 +52,7 @@ export const useSectionCompletion = (data: CVData) => {
       'experiences',
       'certifications',
       'languages',
-      'custom'
+      // 'custom'
     ];
     
     const totalCompletion = sections.reduce(

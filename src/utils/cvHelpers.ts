@@ -17,7 +17,8 @@ export const createEmptyCV = (): CVData => ({
     phone: "",
     location: "",
     github: "",
-    linkedin: ""
+    linkedin: "",
+    fields: []
   },
   skills: [],
   technologies: [],
@@ -47,7 +48,7 @@ export const createEmptyCV = (): CVData => ({
 export const createCustomSection = (title: string, subtitle?: string): CustomSection => ({
   id: generateId(),
   title,
-  subtitle,
+  subtitle: subtitle ?? "",
   blocks: []
 });
 

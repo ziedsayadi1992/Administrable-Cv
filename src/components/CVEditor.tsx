@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { Edit, Eye } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CVData, ContactField } from '../types';
 import EditorHeader from './editor-components/EditorHeader';
@@ -192,7 +191,7 @@ const CVEditor: React.FC<CVEditorProps> = ({
                 setActiveSection={setActiveSection}
                 sensors={sensors}
                 onDragStart={handleDragStart}
-                onDragEnd={handleDragEnd}
+                onDragEnd={(e) => handleDragEnd(e, data, onUpdate, 'customSection')}
                 t={t}
               />
             )}
