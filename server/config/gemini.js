@@ -13,11 +13,11 @@ export const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 // Models
 export const primaryModel = genAI.getGenerativeModel({ 
-  model: "models/gemini-2.0-flash-lite" 
+  model: "models/gemini-2.5-flash" 
 });
 
 export const fallbackModel = genAI.getGenerativeModel({ 
-  model: "models/gemini-2.0-flash-lite" 
+  model: "models/gemini-2.5-flash" 
 });
 
 console.log('✅ Gemini AI initialized');

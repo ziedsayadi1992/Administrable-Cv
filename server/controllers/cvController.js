@@ -1,5 +1,5 @@
 import { extractCVData, isRateLimitError } from '../services/cvService.js';
-import { genAI } from '../config/gemini.js';
+import { genAI , primaryModel } from '../config/gemini.js';
 
 /**
  * Extract CV data from text
@@ -36,7 +36,7 @@ export const extractCV = async (req, res, next) => {
 export const checkRateLimitStatus = async (req, res, next) => {
   try {
     // Try a minimal API call
-    const testModel = genAI.getGenerativeModel({ model: "models/gemini-2.0-flash-lite" });
+    const testModel = primaryModel;
     await testModel.generateContent("Test");
     
     res.json({

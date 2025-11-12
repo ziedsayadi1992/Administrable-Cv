@@ -72,43 +72,77 @@ export function smartSplitChunks(jsonString, targetSize = 800) {
 }
 
 /**
- * Translate a single chunk
+ * ✅ FIXED: Translate a single chunk with proper handling of new CV structure
  */
 export async function translateChunk(text, targetLang, model = primaryModel) {
   const prompt = `
 You are a professional translator specializing in CV/Resume translations. Translate the following JSON fragment to ${targetLang}.
 
-IMPORTANT RULES:
+**IMPORTANT RULES:**
     1. This is CV (Curriculum Vitae) data. Use appropriate professional terminology.
-    2. DO NOT translate:
-      - JSON keys (personalInfo, fullName, jobTitle, etc.)
-      - Field names
-      - IDs
-      - URLs
-      - Email addresses
-    3. DO translate:
-      - All text content values
-      - Job titles
-      - Company descriptions
-      - Skills
-      - Mission descriptions
-      - **ALL section titles in sectionTitles** - CRITICAL: These MUST be translated
-    4. Preserve the EXACT JSON structure
-    5. Return ONLY valid JSON - no markdown, no comments, no explanations
-    6. Keep all arrays the same length
-    7. Keep all special characters and formatting
-    8. CRITICAL: sectionTitles must use professional ${targetLang} terms:
-       - profile → Professional Profile / Profil Professionnel / etc.
-       - skills → Skills / Compétences / etc.
-       - technologies → Technical Environment / Environnements Techniques / etc.
-       - experiences → Professional Experience / Expériences Professionnelles / etc.
-       - certifications → Certifications / Certifications / etc.
-       - languages → Languages / Langues / etc.
+    
+    2. **DO NOT translate (keep original)**:
+      - JSON keys (personalInfo, fullName, jobTitle, skills, etc.)
+      - Field names ("id", "type", "label", "value", "name", "level", etc.)
+      - ID values (skill-1, tech-2, exp-3, etc.)
+      - URLs and email addresses
+      - The "type" field values in contact.fields (email, phone, location, github, linkedin, website)
+    
+    3. **DO translate (all content values)**:
+      - personalInfo.fullName
+      - personalInfo.professionalTitle
+      - profile text
+      - contact.fields[].label (Email → Email/Courriel/البريد الإلكتروني)
+      - contact.fields[].value (only if it's not email/URL)
+      - skills[].value (the actual skill description)
+      - technologies[].title (category names)
+      - technologies[].items (technology names - translate if they're descriptive terms)
+      - experiences[].jobTitle
+      - experiences[].company
+      - experiences[].missions[] (all mission descriptions)
+      - certifications[].name
+      - certifications[].issuer
+      - languages[].name (language names)
+      - languages[].level (proficiency levels)
+      - **ALL section titles in sectionTitles** - CRITICAL: These MUST be translated professionally
+    
+    4. **Structure preservation**:
+      - Preserve the EXACT JSON structure
+      - Keep all arrays the same length
+      - Keep all object keys unchanged
+      - Keep all IDs unchanged
+      - Keep all special characters and formatting
+    
+    5. **Professional terminology for ${targetLang}**:
+      - sectionTitles.profile → Professional Profile / Profil Professionnel / الملف المهني / etc.
+      - sectionTitles.skills → Skills / Compétences / المهارات / etc.
+      - sectionTitles.technologies → Technical Environment / Environnement Technique / البيئة التقنية / etc.
+      - sectionTitles.experiences → Professional Experience / Expérience Professionnelle / الخبرة المهنية / etc.
+      - sectionTitles.certifications → Certifications / Certifications / الشهادات / etc.
+      - sectionTitles.languages → Languages / Langues / اللغات / etc.
+    
+    6. **Output format**:
+      - Return ONLY valid JSON
+      - No markdown code blocks
+      - No comments or explanations
+      - No additional text
 
-    JSON to translate:
-    ${text}
+**Example structure you might receive:**
+{
+  "skills": [
+    { "id": "skill-1", "value": "Project Management" }
+  ],
+  "contact": {
+    "fields": [
+      { "id": "contact-1", "type": "email", "label": "Email", "value": "user@example.com" }
+    ]
+  }
+}
 
-    Return ONLY the translated JSON (no markdown blocks):`;
+**JSON fragment to translate:**
+${text}
+
+**Return ONLY the translated JSON (no markdown blocks):**`;
 
   const result = await model.generateContent(prompt);
   let translated = result.response.text();
