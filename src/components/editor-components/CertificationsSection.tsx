@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Edit2 } from 'lucide-react';
 import { CVData, Certification } from '../../types';
 
 interface CertificationsSectionProps {
@@ -41,6 +41,16 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
     });
   };
 
+  const handleTitleUpdate = (value: string) => {
+    onUpdate({
+      ...data,
+      sectionTitles: {
+        ...data.sectionTitles,
+        certifications: value
+      }
+    });
+  };
+
   return (
     <div className="space-y-5">
       <div className="flex items-center justify-between pb-4 border-b-2 border-neutral-200">
@@ -59,6 +69,30 @@ const CertificationsSection: React.FC<CertificationsSectionProps> = ({
         </button>
       </div>
 
+      {/* CV Title Editor */}
+      <div className="bg-gradient-to-br from-blue-50 to-cyan-50/30 border-2 border-blue-200 rounded-xl p-5">
+        <div className="flex items-center gap-2 mb-3">
+          <Edit2 size={18} className="text-blue-600" />
+          <label className="text-sm font-semibold text-neutral-700">
+            CV Section Title
+          </label>
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+            Appears in CV
+          </span>
+        </div>
+        <input
+          type="text"
+          value={data.sectionTitles.certifications}
+          onChange={(e) => handleTitleUpdate(e.target.value)}
+          className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300 bg-white font-medium"
+          placeholder="e.g., Certifications, Licenses & Certifications"
+        />
+        <p className="text-xs text-neutral-500 mt-2">
+          This title will appear in your CV above this section
+        </p>
+      </div>
+
+      {/* Certifications List */}
       <div className="space-y-4">
         {data.certifications.map((cert) => (
           <div

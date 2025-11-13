@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from 'react';
-import { Edit, Eye } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CVData, ContactField } from '../types';
 import EditorHeader from './editor-components/EditorHeader';
@@ -13,7 +12,6 @@ import ExperiencesSection from './editor-components/ExperiencesSection';
 import CertificationsSection from './editor-components/CertificationsSection';
 import LanguagesSection from './editor-components/LanguagesSection';
 import CustomSectionsManager from './editor-components/CustomSectionsManager';
-import SectionTitlesEditor from './editor-components/SectionTitlesEditor';
 import PrintableCVContent from './PrintableCVContent';
 import { useDragDrop } from '../hooks/useDragDrop';
 import { useSectionCompletion } from '../hooks/useSectionCompletion';
@@ -47,39 +45,28 @@ const CVEditor: React.FC<CVEditorProps> = ({
   const { sensors, handleDragStart, handleDragEnd } = useDragDrop();
   const { getSectionCompletion, getOverallProgress } = useSectionCompletion(data);
 
-  // ✅ Get custom section labels or use translations as fallback
-  const getLabel = (key: keyof NonNullable<typeof data.sectionLabels>) => {
-    return data.sectionLabels?.[key] || t(key);
-  };
-
   // Memoize contact fields
   const contactFields = useMemo<ContactField[]>(() => {
-    if (data.contact.fields && data.contact.fields.length > 0) {
-      return data.contact.fields;
-    }
-    // Convert legacy fields to new format
-    const fields: ContactField[] = [];
-    if (data.contact.email) fields.push({ id: 'legacy-1', type: 'email', label: 'Email', value: data.contact.email });
-    if (data.contact.phone) fields.push({ id: 'legacy-2', type: 'phone', label: 'Phone', value: data.contact.phone });
-    if (data.contact.location) fields.push({ id: 'legacy-3', type: 'location', label: 'Location', value: data.contact.location });
-    if (data.contact.github) fields.push({ id: 'legacy-4', type: 'github', label: 'GitHub', value: data.contact.github });
-    if (data.contact.linkedin) fields.push({ id: 'legacy-5', type: 'linkedin', label: 'LinkedIn', value: data.contact.linkedin });
-    return fields;
-  }, [data.contact]);
+    return data.contact.fields || [];
+  }, [data.contact.fields]);
 
-  const toggleExperience = (expId: string) => {
+  const toggleExperience = (id: string) => {
     setExpandedExperiences(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(expId)) {
-        newSet.delete(expId);
+      if (newSet.has(id)) {
+        newSet.delete(id);
       } else {
-        newSet.add(expId);
+        newSet.add(id);
       }
       return newSet;
     });
   };
 
-  // ✅ Use custom labels in navigation
+  // ✅ Get custom section labels or use translations as fallback
+  const getLabel = (key: keyof NonNullable<typeof data.sectionLabels>) => {
+    return data.sectionLabels?.[key] || t(key);
+  };
+
   const navigationSections = [
     { id: "personal", icon: "👤", label: getLabel('personal'), completion: getSectionCompletion("personal") },
     { id: "contact", icon: "📧", label: getLabel('contact'), completion: getSectionCompletion("contact") },
@@ -89,8 +76,7 @@ const CVEditor: React.FC<CVEditorProps> = ({
     { id: "experiences", icon: "💼", label: getLabel('experiences'), completion: getSectionCompletion("experiences") },
     { id: "certifications", icon: "🏆", label: getLabel('certifications'), completion: getSectionCompletion("certifications") },
     { id: "languages", icon: "🌍", label: getLabel('languages'), completion: getSectionCompletion("languages") },
-    { id: "custom", icon: "✨", label: getLabel('customSections'), completion: getSectionCompletion("custom") },
-    { id: "section-titles", icon: "📋", label: t('sectionTitles') || 'Section Titles', completion: 100 }
+    { id: "custom", icon: "✨", label: getLabel('customSections'), completion: getSectionCompletion("custom") }
   ];
 
   const overallProgress = getOverallProgress();
@@ -201,14 +187,6 @@ const CVEditor: React.FC<CVEditorProps> = ({
                 sensors={sensors}
                 onDragStart={handleDragStart}
                 onDragEnd={(e) => handleDragEnd(e, data, onUpdate, 'customSection')}
-                t={t}
-              />
-            )}
-
-            {activeSection === "section-titles" && (
-              <SectionTitlesEditor
-                data={data}
-                onUpdate={onUpdate}
                 t={t}
               />
             )}
