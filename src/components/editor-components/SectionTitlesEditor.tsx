@@ -1,5 +1,5 @@
 import React from 'react';
-import { Type, Info } from 'lucide-react';
+import { Type, Info, Navigation, FileText } from 'lucide-react';
 import { CVData } from '../../types';
 
 interface SectionTitlesEditorProps {
@@ -13,6 +13,29 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
   onUpdate,
   t,
 }) => {
+  // Ensure sectionLabels exists with defaults
+  const sectionLabels = data.sectionLabels || {
+    personal: t('personalInfo'),
+    contact: t('contact'),
+    profile: t('profile'),
+    skills: t('skills'),
+    technologies: t('technologies'),
+    experiences: t('experiences'),
+    certifications: t('certifications'),
+    languages: t('languages'),
+    customSections: t('customSections')
+  };
+
+  const updateSectionLabel = (section: keyof typeof sectionLabels, label: string) => {
+    onUpdate({
+      ...data,
+      sectionLabels: {
+        ...sectionLabels,
+        [section]: label
+      }
+    });
+  };
+
   const updateSectionTitle = (section: keyof typeof data.sectionTitles, title: string) => {
     onUpdate({
       ...data,
@@ -23,47 +46,113 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
     });
   };
 
-  const sectionDefinitions = [
+  const navigationSections = [
+    {
+      key: 'personal' as const,
+      icon: '👤',
+      label: 'Personal Information',
+      description: 'Label for personal information section in navigation',
+      placeholder: 'e.g., Personal Information, About, Personal Details'
+    },
+    {
+      key: 'contact' as const,
+      icon: '📧',
+      label: 'Contact',
+      description: 'Label for contact section in navigation',
+      placeholder: 'e.g., Contact, Contact Information, Get in Touch'
+    },
     {
       key: 'profile' as const,
       icon: '📝',
-      label: 'Profile Section',
-      description: 'Title for your professional summary/profile section',
-      placeholder: 'e.g., Professional Profile, About Me, Summary'
+      label: 'Profile',
+      description: 'Label for profile section in navigation',
+      placeholder: 'e.g., Profile, Professional Summary, About Me'
     },
     {
       key: 'skills' as const,
       icon: '💡',
-      label: 'Skills Section',
-      description: 'Title for your skills/competencies section',
+      label: 'Skills',
+      description: 'Label for skills section in navigation',
       placeholder: 'e.g., Skills, Competencies, Core Skills'
     },
     {
       key: 'technologies' as const,
       icon: '🔧',
-      label: 'Technologies Section',
-      description: 'Title for your technical skills/tools section',
-      placeholder: 'e.g., Technical Environment, Technologies, Tools & Technologies'
+      label: 'Technologies',
+      description: 'Label for technologies section in navigation',
+      placeholder: 'e.g., Technologies, Technical Stack, Tools'
     },
     {
       key: 'experiences' as const,
       icon: '💼',
-      label: 'Experience Section',
-      description: 'Title for your work experience section',
+      label: 'Experiences',
+      description: 'Label for experiences section in navigation',
+      placeholder: 'e.g., Experience, Work History, Employment'
+    },
+    {
+      key: 'certifications' as const,
+      icon: '🏆',
+      label: 'Certifications',
+      description: 'Label for certifications section in navigation',
+      placeholder: 'e.g., Certifications, Credentials, Licenses'
+    },
+    {
+      key: 'languages' as const,
+      icon: '🌍',
+      label: 'Languages',
+      description: 'Label for languages section in navigation',
+      placeholder: 'e.g., Languages, Language Skills, Linguistic Abilities'
+    },
+    {
+      key: 'customSections' as const,
+      icon: '✨',
+      label: 'Custom Sections',
+      description: 'Label for custom sections in navigation',
+      placeholder: 'e.g., Custom Sections, Additional Sections, More'
+    }
+  ];
+
+  const cvTitleSections = [
+    {
+      key: 'profile' as const,
+      icon: '📝',
+      label: 'Profile Section Title',
+      description: 'Title that appears in your CV for the profile section',
+      placeholder: 'e.g., Professional Profile, About Me, Summary'
+    },
+    {
+      key: 'skills' as const,
+      icon: '💡',
+      label: 'Skills Section Title',
+      description: 'Title that appears in your CV for the skills section',
+      placeholder: 'e.g., Core Skills, Competencies, Skills'
+    },
+    {
+      key: 'technologies' as const,
+      icon: '🔧',
+      label: 'Technologies Section Title',
+      description: 'Title that appears in your CV for the technologies section',
+      placeholder: 'e.g., Technical Environment, Technologies, Tech Stack'
+    },
+    {
+      key: 'experiences' as const,
+      icon: '💼',
+      label: 'Experiences Section Title',
+      description: 'Title that appears in your CV for the experiences section',
       placeholder: 'e.g., Professional Experience, Work History, Experience'
     },
     {
       key: 'certifications' as const,
       icon: '🏆',
-      label: 'Certifications Section',
-      description: 'Title for your certifications section',
+      label: 'Certifications Section Title',
+      description: 'Title that appears in your CV for the certifications section',
       placeholder: 'e.g., Certifications, Licenses & Certifications'
     },
     {
       key: 'languages' as const,
       icon: '🌍',
-      label: 'Languages Section',
-      description: 'Title for your languages section',
+      label: 'Languages Section Title',
+      description: 'Title that appears in your CV for the languages section',
       placeholder: 'e.g., Languages, Language Skills'
     }
   ];
@@ -77,10 +166,10 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
           </div>
           <div>
             <h3 className="text-2xl font-bold text-neutral-900">
-              {t('sectionTitles') || 'Section Titles'}
+              {t('sectionTitles') || 'Section Labels & Titles'}
             </h3>
             <p className="text-sm text-neutral-500">
-              Customize the titles of each section in your CV
+              Customize both navigation labels and CV section titles
             </p>
           </div>
         </div>
@@ -91,18 +180,27 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
           <Info size={20} className="text-blue-600 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm text-blue-900 font-medium mb-1">
-              Personalize Your CV
+              Two Types of Labels
             </p>
             <p className="text-xs text-blue-800">
-              Change section titles to match your preferred terminology or to better suit your industry.
-              These titles will appear in your final CV document.
+              <strong>Navigation Labels</strong> appear in the editor sidebar. 
+              <strong>CV Titles</strong> appear as section headers in your exported CV.
             </p>
           </div>
         </div>
       </div>
 
+      {/* Navigation Labels */}
       <div className="space-y-4">
-        {sectionDefinitions.map((section) => (
+        <div className="flex items-center gap-2 mb-3">
+          <Navigation size={20} className="text-blue-600" />
+          <h4 className="text-lg font-bold text-neutral-800">Navigation Labels</h4>
+          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+            Editor Sidebar
+          </span>
+        </div>
+
+        {navigationSections.map((section) => (
           <div
             key={section.key}
             className="bg-gradient-to-br from-white to-neutral-50 border-2 border-neutral-200 rounded-xl p-5 space-y-3 hover:shadow-md transition-all duration-200"
@@ -117,8 +215,8 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
             
             <input
               type="text"
-              value={data.sectionTitles[section.key]}
-              onChange={(e) => updateSectionTitle(section.key, e.target.value)}
+              value={sectionLabels[section.key]}
+              onChange={(e) => updateSectionLabel(section.key, e.target.value)}
               className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-neutral-300 bg-white font-medium"
               placeholder={section.placeholder}
             />
@@ -126,7 +224,41 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
         ))}
       </div>
 
-      <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-xl">
+      {/* CV Section Titles */}
+      <div className="space-y-4 mt-8">
+        <div className="flex items-center gap-2 mb-3">
+          <FileText size={20} className="text-green-600" />
+          <h4 className="text-lg font-bold text-neutral-800">CV Section Titles</h4>
+          <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">
+            CV Document
+          </span>
+        </div>
+
+        {cvTitleSections.map((section) => (
+          <div
+            key={section.key}
+            className="bg-gradient-to-br from-white to-green-50/30 border-2 border-green-200 rounded-xl p-5 space-y-3 hover:shadow-md transition-all duration-200"
+          >
+            <div className="flex items-center gap-3 mb-2">
+              <span className="text-2xl">{section.icon}</span>
+              <div className="flex-1">
+                <h4 className="font-semibold text-neutral-800">{section.label}</h4>
+                <p className="text-xs text-neutral-500">{section.description}</p>
+              </div>
+            </div>
+            
+            <input
+              type="text"
+              value={data.sectionTitles[section.key]}
+              onChange={(e) => updateSectionTitle(section.key, e.target.value)}
+              className="w-full px-4 py-3 border-2 border-green-200 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-200 hover:border-green-300 bg-white font-medium"
+              placeholder={section.placeholder}
+            />
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-green-50 border-l-4 border-green-500 p-4 rounded-r-xl mt-6">
         <div className="flex gap-3">
           <span className="text-green-600 text-xl">✓</span>
           <div>
@@ -134,7 +266,7 @@ const SectionTitlesEditor: React.FC<SectionTitlesEditorProps> = ({
               Preview Your Changes
             </p>
             <p className="text-xs text-green-800">
-              Your section title changes will be immediately reflected in the live preview on the right.
+              Navigation label changes appear in the sidebar immediately. CV title changes appear in the preview document.
             </p>
           </div>
         </div>

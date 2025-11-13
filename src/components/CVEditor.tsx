@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { Edit, Eye } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { CVData, ContactField } from '../types';
 import EditorHeader from './editor-components/EditorHeader';
@@ -12,6 +13,7 @@ import ExperiencesSection from './editor-components/ExperiencesSection';
 import CertificationsSection from './editor-components/CertificationsSection';
 import LanguagesSection from './editor-components/LanguagesSection';
 import CustomSectionsManager from './editor-components/CustomSectionsManager';
+import SectionTitlesEditor from './editor-components/SectionTitlesEditor';
 import PrintableCVContent from './PrintableCVContent';
 import { useDragDrop } from '../hooks/useDragDrop';
 import { useSectionCompletion } from '../hooks/useSectionCompletion';
@@ -45,6 +47,11 @@ const CVEditor: React.FC<CVEditorProps> = ({
   const { sensors, handleDragStart, handleDragEnd } = useDragDrop();
   const { getSectionCompletion, getOverallProgress } = useSectionCompletion(data);
 
+  // ✅ Get custom section labels or use translations as fallback
+  const getLabel = (key: keyof NonNullable<typeof data.sectionLabels>) => {
+    return data.sectionLabels?.[key] || t(key);
+  };
+
   // Memoize contact fields
   const contactFields = useMemo<ContactField[]>(() => {
     if (data.contact.fields && data.contact.fields.length > 0) {
@@ -72,16 +79,18 @@ const CVEditor: React.FC<CVEditorProps> = ({
     });
   };
 
+  // ✅ Use custom labels in navigation
   const navigationSections = [
-    { id: "personal", icon: "👤", label: t('personalInfo'), completion: getSectionCompletion("personal") },
-    { id: "contact", icon: "📧", label: t('contact'), completion: getSectionCompletion("contact") },
-    { id: "profile", icon: "📝", label: t('profile'), completion: getSectionCompletion("profile") },
-    { id: "skills", icon: "💡", label: t('skills'), completion: getSectionCompletion("skills") },
-    { id: "technologies", icon: "🔧", label: t('technologies'), completion: getSectionCompletion("technologies") },
-    { id: "experiences", icon: "💼", label: t('experiences'), completion: getSectionCompletion("experiences") },
-    { id: "certifications", icon: "🏆", label: t('certifications'), completion: getSectionCompletion("certifications") },
-    { id: "languages", icon: "🌍", label: t('languages'), completion: getSectionCompletion("languages") },
-    { id: "custom", icon: "✨", label: t('customSections'), completion: getSectionCompletion("custom") }
+    { id: "personal", icon: "👤", label: getLabel('personal'), completion: getSectionCompletion("personal") },
+    { id: "contact", icon: "📧", label: getLabel('contact'), completion: getSectionCompletion("contact") },
+    { id: "profile", icon: "📝", label: getLabel('profile'), completion: getSectionCompletion("profile") },
+    { id: "skills", icon: "💡", label: getLabel('skills'), completion: getSectionCompletion("skills") },
+    { id: "technologies", icon: "🔧", label: getLabel('technologies'), completion: getSectionCompletion("technologies") },
+    { id: "experiences", icon: "💼", label: getLabel('experiences'), completion: getSectionCompletion("experiences") },
+    { id: "certifications", icon: "🏆", label: getLabel('certifications'), completion: getSectionCompletion("certifications") },
+    { id: "languages", icon: "🌍", label: getLabel('languages'), completion: getSectionCompletion("languages") },
+    { id: "custom", icon: "✨", label: getLabel('customSections'), completion: getSectionCompletion("custom") },
+    { id: "section-titles", icon: "📋", label: t('sectionTitles') || 'Section Titles', completion: 100 }
   ];
 
   const overallProgress = getOverallProgress();
@@ -192,6 +201,14 @@ const CVEditor: React.FC<CVEditorProps> = ({
                 sensors={sensors}
                 onDragStart={handleDragStart}
                 onDragEnd={(e) => handleDragEnd(e, data, onUpdate, 'customSection')}
+                t={t}
+              />
+            )}
+
+            {activeSection === "section-titles" && (
+              <SectionTitlesEditor
+                data={data}
+                onUpdate={onUpdate}
                 t={t}
               />
             )}

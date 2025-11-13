@@ -64,6 +64,18 @@ export interface CustomSection {
   blocks: CustomSectionBlock[];
 }
 
+export interface SectionLabels {
+  personal: string;
+  contact: string;
+  profile: string;
+  skills: string;
+  technologies: string;
+  experiences: string;
+  certifications: string;
+  languages: string;
+  customSections: string;
+}
+
 export interface SectionTitles {
   profile: string;
   skills: string;
@@ -85,6 +97,7 @@ export interface CVData {
   sectionTitles: SectionTitles;
   sectionOrder: string[];
   customSections: CustomSection[];
+  sectionLabels?: SectionLabels;
 }
 
 // Component Props Types
