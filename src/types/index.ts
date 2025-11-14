@@ -77,6 +77,8 @@ export interface SectionLabels {
 }
 
 export interface SectionTitles {
+  personal?: string;  // ✅ Optional - for custom CV layouts
+  contact?: string;   // ✅ Optional - for custom CV layouts
   profile: string;
   skills: string;
   technologies: string;

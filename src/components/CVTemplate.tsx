@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Download, Languages, RotateCcw } from 'lucide-react';
 import { useReactToPrint } from 'react-to-print';
 import PrintableCVContent from './PrintableCVContent';
+import LoadingOverlay from './Loadingoverlay';
 import type { CVData } from '../types';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useImprovedTranslate } from '../hooks/useImprovedTranslate';
@@ -10,7 +11,7 @@ import { getCVTemplate } from '../data/cvTemplates';
 
 interface CVTemplateProps {
   data?: CVData;
-  onUpdateData?: (data: CVData) => void; // Add callback to update parent data
+  onUpdateData?: (data: CVData) => void;
 }
 
 const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
@@ -30,7 +31,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
   const { translateStream, progress } = useImprovedTranslate();
   const [previousLanguage, setPreviousLanguage] = useState<string>(currentLanguage);
 
-  // ✅ FIX: Ensure data always has a fallback
   const safeData = React.useMemo(() => {
     if (!data) {
       console.error('❌ No data provided to CVTemplate');
@@ -52,23 +52,18 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
     return data;
   }, [data]);
 
- const displayData =
-  translatedCV && Object.keys(translatedCV).length > 0
-    ? translatedCV
-    : safeData;
+  const displayData =
+    translatedCV && Object.keys(translatedCV).length > 0
+      ? translatedCV
+      : safeData;
 
-
-  // ✅ NEW FIX: Handle template-to-template switching
   useEffect(() => {
-    // Skip if this is the first render
     if (previousLanguage === currentLanguage) {
       return;
     }
 
-    // Update previous language
     setPreviousLanguage(currentLanguage);
 
-    // If no data, skip
     if (!safeData) {
       return;
     }
@@ -76,22 +71,16 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
     console.log(`🔄 Language changed from ${previousLanguage} to ${currentLanguage}`);
     console.log(`📝 Current cvSourceLanguage: ${cvSourceLanguage}`);
 
-    // ✅ NEW: If CV is from a template, load new template instead of translating
     if (cvSourceLanguage !== null) {
       console.log(`✅ CV is from ${cvSourceLanguage} template, loading ${currentLanguage} template instead of translating`);
       
-      // Load the template for the target language
       const newTemplate = getCVTemplate(currentLanguage);
       
-      // Update the CV data with the new template
       if (onUpdateData) {
         onUpdateData(newTemplate);
       }
       
-      // Update source language to the new template language
       setCvSourceLanguage(currentLanguage);
-      
-      // Clear any translated CV
       setTranslatedCV(null);
       setIsTranslating(false);
       
@@ -99,10 +88,8 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
       return;
     }
 
-    // ✅ If CV is user-modified (cvSourceLanguage === null), then translate
     console.log(`🌍 CV is user-modified, translating to ${currentLanguage}...`);
 
-    // Check cache first
     const cached = translationCache.get(safeData, currentLanguage);
     if (cached) {
       console.log(`✅ Using cached translation for ${currentLanguage}`);
@@ -111,7 +98,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
       return;
     }
 
-    // Translate the user-modified CV
     setIsTranslating(true);
     let assembledText = '';
 
@@ -142,7 +128,7 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
     return () => {
       if (abort) abort();
     };
-  }, [currentLanguage, cvSourceLanguage]); // ✅ Dependencies
+  }, [currentLanguage, cvSourceLanguage]);
 
   const handlePrint = useReactToPrint({
     contentRef: componentRef,
@@ -181,23 +167,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
     setTranslatedCV(null);
   };
 
-  // Show loading only during translation with progress
-  if (isTranslating && progress.percentage < 10) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="mt-4 text-gray-600">{t('translating')}</p>
-          {progress.total > 0 && (
-            <p className="text-sm text-gray-500 mt-2">
-              {progress.current} / {progress.total} chunks ({progress.percentage}%)
-            </p>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   console.log('✅ Rendering CVTemplate with data:', displayData);
 
   if (!displayData) {
@@ -214,7 +183,15 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-cyan-50">
-      {/* ✅ FIXED: Better responsive CV controls bar */}
+      {/* ✅ Loading Overlay - Shows during translation */}
+      {isTranslating && progress.percentage >= 10 && (
+        <LoadingOverlay 
+          progress={progress.percentage}
+          message={t('translating')}
+        />
+      )}
+
+      {/* CV Controls Bar */}
       <div className="no-print sticky top-16 z-40 bg-white/95 backdrop-blur-sm border-b border-gray-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-between gap-3 py-3">
@@ -233,7 +210,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
                 <option value="German">Deutsch</option>
                 <option value="Spanish">Español</option>
               </select>
-              {/* Show indicator if CV is from template */}
               {cvSourceLanguage !== null && (
                 <span className="text-xs text-green-600 font-medium">
                   ✓ Template
@@ -243,7 +219,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2">
-              {/* Reset Language Button (visible only when translated) */}
               {currentLanguage !== 'Français' && translatedCV && (
                 <button
                   onClick={handleResetLanguage}
@@ -255,7 +230,6 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
                 </button>
               )}
 
-              {/* PDF Export Button */}
               <button
                 onClick={handlePrint}
                 disabled={isTranslating}
@@ -268,16 +242,16 @@ const CVTemplate: React.FC<CVTemplateProps> = ({ data, onUpdateData }) => {
             </div>
           </div>
 
-          {/* Translation Progress Bar */}
-          {isTranslating && progress.percentage >= 10 && (
+          {/* Mini Progress Bar - Only show when translation just started */}
+          {isTranslating && progress.percentage < 10 && (
             <div className="pb-3">
               <div className="flex items-center justify-between text-xs text-gray-600 mb-1">
                 <span>{t('translating')}</span>
                 <span>{progress.percentage}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+              <div className="w-full bg-gray-200 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  className="bg-gradient-to-r from-blue-600 to-cyan-600 h-2 rounded-full transition-all duration-300 ease-out"
+                  className="bg-gradient-to-r from-blue-600 to-cyan-600 h-1.5 rounded-full transition-all duration-300 ease-out"
                   style={{ width: `${progress.percentage}%` }}
                 />
               </div>
