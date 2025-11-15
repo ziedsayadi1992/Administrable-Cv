@@ -1,5 +1,5 @@
 import React from 'react';
-import { Edit2 } from 'lucide-react';
+import { Edit2, FileText } from 'lucide-react';
 import { CVData } from '../../types';
 
 interface ProfileSectionProps {
@@ -41,15 +41,33 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
         </div>
       </div>
 
+      {/* Professional Tips */}
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+        <div className="flex gap-3">
+          <span className="text-blue-600 text-xl">💡</span>
+          <div>
+            <p className="text-sm text-blue-900 font-medium mb-1">
+              {t('profileTipsTitle')}
+            </p>
+            <ul className="text-xs text-blue-800 space-y-1">
+              <li>• {t('profileTip1')}</li>
+              <li>• {t('profileTip2')}</li>
+              <li>• {t('profileTip3')}</li>
+              <li>• {t('profileTip4')}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* CV Title Editor */}
       <div className="bg-gradient-to-br from-blue-50 to-cyan-50/30 border-2 border-blue-200 rounded-xl p-5">
         <div className="flex items-center gap-2 mb-3">
           <Edit2 size={18} className="text-blue-600" />
           <label className="text-sm font-semibold text-neutral-700">
-            CV Section Title
+            {t('editableSectionTitle') || 'CV Section Title'}
           </label>
           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-            Appears in CV
+            {t('editableSectionTag') || 'Appears in CV'}
           </span>
         </div>
         <input
@@ -60,25 +78,25 @@ const ProfileSection: React.FC<ProfileSectionProps> = ({
           placeholder="e.g., Professional Profile, About Me, Summary"
         />
         <p className="text-xs text-neutral-500 mt-2">
-          This title will appear in your CV above this section
+          {t('editableSectionTitleHint') || 'This title will appear as the section header in your CV.'}
         </p>
       </div>
 
-      {/* Profile Content */}
-      <div className="bg-gradient-to-br from-white to-neutral-50 border-2 border-neutral-200 rounded-xl p-6">
-        <label className="block text-sm font-semibold text-neutral-700 mb-2">
-          {t('professionalSummary')}
+      {/* Profile Text Area */}
+      <div className="bg-gradient-to-br from-white to-neutral-50 border-2 border-neutral-200 rounded-xl p-5">
+        <label className="block text-sm font-semibold text-neutral-700 mb-3">
+          Professional Profile Description
         </label>
         <textarea
           value={data.profile}
           onChange={(e) => handleProfileUpdate(e.target.value)}
-          rows={8}
+          rows={6}
           className="w-full px-4 py-3 border-2 border-neutral-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-neutral-300 bg-white resize-none"
-          placeholder={t('profilePlaceholder') || "Write a compelling professional summary that highlights your key strengths, experience, and career objectives..."}
+          placeholder="Write a compelling professional summary that highlights your expertise, experience, and career goals. Keep it concise and impactful (3-5 sentences)."
         />
-        <p className="text-xs text-neutral-500 mt-2">
-          {t('profileTip') || "Tip: Keep it concise (3-5 sentences) and focus on your unique value proposition"}
-        </p>
+        <div className="mt-2 text-xs text-neutral-500">
+          {data.profile.length} characters
+        </div>
       </div>
     </div>
   );

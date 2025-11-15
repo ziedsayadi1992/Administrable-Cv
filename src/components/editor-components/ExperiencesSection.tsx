@@ -1,5 +1,5 @@
 import React from 'react';
-import { Plus, Trash2, ChevronDown, ChevronUp, Edit2 } from 'lucide-react';
+import { Plus, Trash2, ChevronDown, ChevronUp, Edit2 , Briefcase   } from 'lucide-react';
 import { CVData, Experience } from '../../types';
 
 interface ExperiencesSectionProps {
@@ -109,15 +109,32 @@ const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
         </button>
       </div>
 
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+        <div className="flex gap-3">
+          <span className="text-blue-600 text-xl">💡</span>
+          <div>
+            <p className="text-sm text-blue-900 font-medium mb-1">
+              {t('experienceTipsTitle')}
+            </p>
+            <ul className="text-xs text-blue-800 space-y-1">
+              <li>• {t('experienceTip1')}</li>
+              <li>• {t('experienceTip2')}</li>
+              <li>• {t('experienceTip3')}</li>
+              <li>• {t('experienceTip4')}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       {/* CV Title Editor */}
       <div className="bg-gradient-to-br from-blue-50 to-cyan-50/30 border-2 border-blue-200 rounded-xl p-5">
         <div className="flex items-center gap-2 mb-3">
           <Edit2 size={18} className="text-blue-600" />
           <label className="text-sm font-semibold text-neutral-700">
-            CV Section Title
+            {t('editableSectionTitle') || 'CV Section Title'}
           </label>
           <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-            Appears in CV
+            {t('editableSectionTag') || 'Appears in CV'}
           </span>
         </div>
         <input
@@ -128,7 +145,7 @@ const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
           placeholder="e.g., Professional Experience, Work History, Experience"
         />
         <p className="text-xs text-neutral-500 mt-2">
-          This title will appear in your CV above this section
+          {t('editableSectionTitleHint') || 'This title will appear as the section header in your CV.'}
         </p>
       </div>
 
@@ -215,8 +232,13 @@ const ExperiencesSection: React.FC<ExperiencesSectionProps> = ({
       </div>
 
       {data.experiences.length === 0 && (
-        <div className="text-center py-12 text-neutral-400">
-          <p>{t('noExperiences') || 'No work experiences added yet. Click "Add Experience" to get started.'}</p>
+       
+         <div className="text-center py-12 text-neutral-400">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 mb-4">
+            <Briefcase  size={32} className="text-blue-600" />
+          </div>
+          <p className="font-medium mb-2">{t('noExperiences') || 'No work experiences added yet. Click "Add Experience" to get started.'}</p>
+          <p className="text-sm">{t('noExperiencesHint')}</p>
         </div>
       )}
     </div>

@@ -148,6 +148,9 @@ const CVEditor: React.FC<CVEditorProps> = ({
               <TechnologiesSection
                 data={data}
                 onUpdate={onUpdate}
+                sensors={sensors}
+                onDragStart={handleDragStart}
+                onDragEnd={(e) => handleDragEnd(e, data, onUpdate, 'technologies')}
                 t={t}
               />
             )}

@@ -44,7 +44,12 @@ const CustomSectionsManager: React.FC<CustomSectionsManagerProps> = ({
     newData.customSections.push(newSection);
     newData.sectionOrder.push(newSection.id);
     onUpdate(newData);
-    setActiveSection(newSection.id);
+    
+    // FIX: Force a re-render by ensuring the state update is complete
+    // Use setTimeout to ensure state update is processed before switching sections
+    setTimeout(() => {
+      setActiveSection(newSection.id);
+    }, 0);
   };
 
   const removeCustomSection = (id: string) => {
@@ -128,21 +133,43 @@ const CustomSectionsManager: React.FC<CustomSectionsManagerProps> = ({
         </button>
       </div>
 
-      {/* Info Box */}
-      <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-xl">
-        <div className="flex gap-3">
-          <Info size={20} className="text-purple-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <p className="text-sm text-purple-900 font-medium mb-1">
-              About Custom Sections
-            </p>
-            <p className="text-xs text-purple-800">
-              Each custom section has its own <strong>title</strong> (main heading) and optional <strong>subtitle</strong> (description). 
-              These titles appear directly in your CV, so make them descriptive and professional.
-            </p>
+      {/* Professional Tips - Only show when there are custom sections */}
+      {data.customSections.length > 0 && (
+        <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-xl">
+          <div className="flex gap-3">
+            <span className="text-purple-600 text-xl">💡</span>
+            <div>
+              <p className="text-sm text-purple-900 font-medium mb-2">
+                {t('customSectionsTipsTitle')}
+              </p>
+              <ul className="text-xs text-purple-800 space-y-1">
+                <li>• {t('customSectionsTip1')}</li>
+                <li>• {t('customSectionsTip2')}</li>
+                <li>• {t('customSectionsTip3')}</li>
+                <li>• {t('customSectionsTip4')}</li>
+                <li>• {t('customSectionsTip5')}</li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Info Box */}
+      {data.customSections.length > 0 && (
+        <div className="bg-purple-50 border-l-4 border-purple-500 p-4 rounded-r-xl">
+          <div className="flex gap-3">
+            <Info size={20} className="text-purple-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm text-purple-900 font-medium mb-1">
+                {t('customSectionsAboutTitle')}
+              </p>
+              <p className="text-xs text-purple-800">
+                {t('customSectionsAbout')}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Empty State */}
       {data.customSections.length === 0 && (
@@ -151,17 +178,17 @@ const CustomSectionsManager: React.FC<CustomSectionsManagerProps> = ({
             <Sparkles size={40} className="text-purple-600" />
           </div>
           <h4 className="text-lg font-bold text-neutral-800 mb-2">
-            {t('noCustomSections') || 'No custom sections yet'}
+            {t('noCustomSections')}
           </h4>
           <p className="text-sm text-neutral-500 mb-6 max-w-md mx-auto">
-            {t('customSectionHint') || 'Add custom sections to showcase your projects, awards, publications, volunteer work, or any other information that makes you stand out.'}
+            {t('noCustomSectionsHint')}
           </p>
           <button
             onClick={addCustomSection}
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] font-medium"
           >
             <Plus size={20} />
-            Create Your First Section
+            {t('createFirstSection')}
           </button>
         </div>
       )}
@@ -182,82 +209,79 @@ const CustomSectionsManager: React.FC<CustomSectionsManagerProps> = ({
                   {/* Section Title */}
                   <div>
                     <label className="block text-xs font-semibold text-purple-700 mb-1.5 uppercase tracking-wide">
-                      Section Title *
+                      {t('sectionTitle')} *
                     </label>
                     <input
                       type="text"
                       value={customSection.title}
                       onChange={(e) => updateCustomSectionTitle(customSection.id, e.target.value)}
                       className="w-full px-4 py-3 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 hover:border-purple-300 bg-white font-bold text-lg"
-                      placeholder={t('sectionTitle') || "e.g., Projects, Awards, Publications"}
+                      placeholder={t('sectionPlaceholder') || "e.g., Projects, Awards, Publications"}
                     />
                   </div>
                   
                   {/* Section Subtitle */}
                   <div>
                     <label className="block text-xs font-semibold text-purple-700 mb-1.5 uppercase tracking-wide">
-                      Subtitle (Optional)
+                      {t('subtitle')}
                     </label>
                     <input
                       type="text"
                       value={customSection.subtitle || ''}
                       onChange={(e) => updateCustomSectionSubtitle(customSection.id, e.target.value)}
                       className="w-full px-4 py-2.5 border-2 border-purple-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 hover:border-purple-300 bg-white text-sm"
-                      placeholder={t('sectionSubtitle') || "Optional subtitle or description"}
+                      placeholder={t('subtitlePlaceholder') || "Optional subtitle or description"}
                     />
                   </div>
                 </div>
                 
-                {/* Delete Section Button */}
                 <button
                   onClick={() => removeCustomSection(customSection.id)}
-                  className="px-3 py-3 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all duration-200 hover:scale-105"
-                  title="Delete section"
+                  className="px-3 py-3 bg-red-50 hover:bg-red-500 text-red-500 hover:text-white rounded-xl transition-all duration-200"
+                  title={t('removeSection')}
                 >
                   <Trash2 size={18} />
                 </button>
               </div>
 
               {/* Content Blocks */}
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-semibold text-neutral-700 flex items-center gap-2">
-                    <span className="w-2 h-2 bg-purple-500 rounded-full"></span>
-                    {t('contentBlocks') || 'Content Blocks'}
+                  <label className="text-sm font-semibold text-neutral-700 uppercase tracking-wide">
+                    {t('content')}
                   </label>
                   <button
                     onClick={() => addCustomSectionBlock(customSection.id)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-purple-50 text-purple-600 hover:bg-purple-100 rounded-lg transition-colors font-medium"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-purple-100 hover:bg-purple-200 text-purple-700 rounded-lg transition-all text-xs font-medium"
                   >
                     <Plus size={14} />
-                    {t('addBlock') || 'Add Block'}
+                    {t('addBlock')}
                   </button>
                 </div>
 
-                {blocks.length === 0 ? (
-                  <div className="text-center py-8 bg-purple-50/50 rounded-xl border-2 border-dashed border-purple-200">
-                    <p className="text-neutral-400 text-sm font-medium">
-                      {t('noBlocks') || 'No content blocks yet'}
-                    </p>
-                    <p className="text-neutral-400 text-xs mt-1">
-                      Click "Add Block" to start adding content
+                {blocks.length === 0 && (
+                  <div className="text-center py-8 bg-purple-50/50 rounded-lg border-2 border-dashed border-purple-200">
+                    <p className="text-sm text-neutral-500">
+                      {t('blockPlaceholder') || "No content blocks yet. Click 'Add Block' to start."}
                     </p>
                   </div>
-                ) : (
+                )}
+
+                {blocks.length > 0 && (
                   <DndContext
                     sensors={sensors}
                     collisionDetection={closestCenter}
                     onDragStart={onDragStart}
-                    onDragEnd={(e) => onDragEnd(e)}
+                    onDragEnd={onDragEnd}
                   >
                     <SortableContext
                       items={blocks.map(b => b.id)}
                       strategy={verticalListSortingStrategy}
                     >
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         {blocks.map((block) => (
                           <SortableItem key={block.id} id={block.id} isDraggingGlobal={false}>
-                            <div className="bg-white border-2 border-purple-200 rounded-xl p-3 hover:shadow-sm transition-all duration-200">
+                            <div className="bg-white border-2 border-neutral-200 rounded-lg p-3 hover:border-purple-300 transition-all">
                               <div className="flex gap-2">
                                 <textarea
                                   value={block.content}
@@ -285,27 +309,6 @@ const CustomSectionsManager: React.FC<CustomSectionsManagerProps> = ({
           );
         })}
       </div>
-
-      {/* Tips Section */}
-      {data.customSections.length > 0 && (
-        <div className="bg-gradient-to-r from-purple-50 to-pink-50 border-l-4 border-purple-500 p-4 rounded-r-xl">
-          <div className="flex gap-3">
-            <span className="text-purple-600 text-xl">💡</span>
-            <div>
-              <p className="text-sm text-purple-900 font-medium mb-2">
-                Popular Custom Sections
-              </p>
-              <ul className="text-xs text-purple-800 space-y-1">
-                <li>• <strong>Projects:</strong> Showcase personal or professional projects</li>
-                <li>• <strong>Publications:</strong> List research papers or articles</li>
-                <li>• <strong>Awards & Honors:</strong> Highlight achievements and recognition</li>
-                <li>• <strong>Volunteer Work:</strong> Demonstrate community involvement</li>
-                <li>• <strong>Conferences:</strong> Speaking engagements or attendance</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

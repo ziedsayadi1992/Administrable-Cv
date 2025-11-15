@@ -36,7 +36,7 @@ export const useDragDrop = () => {
     event: DragEndEvent,
     data: CVData,
     onUpdate: (data: CVData) => void,
-    section: 'contact' | 'skills' | 'experiences' | 'customSection',
+    section: 'contact' | 'skills' | 'experiences' | 'technologies' | 'customSection',
     sectionId?: string  // ✅ NEW: Optional sectionId for custom sections
   ) => {
     const { active, over } = event;

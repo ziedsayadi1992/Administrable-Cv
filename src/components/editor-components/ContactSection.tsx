@@ -96,36 +96,27 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-500 to-cyan-500 text-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 hover:scale-[1.02] font-medium text-sm"
         >
           <Plus size={18} />
-          Add Field
+          {t('addField')}
         </button>
       </div>
 
-      {/* CV Title Editor - Optional for Contact */}
-      {/* <div className="bg-gradient-to-br from-blue-50 to-cyan-50/30 border-2 border-blue-200 rounded-xl p-5">
-        <div className="flex items-center gap-2 mb-3">
-          <Edit2 size={18} className="text-blue-600" />
-          <label className="text-sm font-semibold text-neutral-700">
-            CV Section Title (Optional)
-          </label>
-          <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
-            Header Section
-          </span>
+      {/* Professional Tips */}
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-xl">
+        <div className="flex gap-3">
+          <span className="text-blue-600 text-xl">💡</span>
+          <div>
+            <p className="text-sm text-blue-900 font-medium mb-1">
+              {t('contactTipsTitle')}
+            </p>
+            <ul className="text-xs text-blue-800 space-y-1">
+              <li>• {t('contactTip1')}</li>
+              <li>• {t('contactTip2')}</li>
+              <li>• {t('contactTip3')}</li>
+              <li>• {t('contactTip4')}</li>
+            </ul>
+          </div>
         </div>
-        <input
-          type="text"
-          value={data.sectionTitles?.contact || ''}
-          onChange={(e) => handleTitleUpdate(e.target.value)}
-          className="w-full px-4 py-3 border-2 border-blue-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:border-blue-300 bg-white font-medium"
-          placeholder="e.g., Contact Information, Get in Touch, Contact Details"
-        />
-        <div className="flex items-start gap-2 mt-3 p-3 bg-blue-50/50 rounded-lg">
-          <Info size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-neutral-600">
-            <strong>Note:</strong> In most CV templates, contact information appears in the header without a section title. 
-            This field is optional and allows customization for alternative layouts.
-          </p>
-        </div>
-      </div> */}
+      </div>
 
       {/* Contact Fields List */}
       <DndContext
@@ -184,8 +175,8 @@ const ContactSection: React.FC<ContactSectionProps> = ({
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 mb-4">
             <Mail size={32} className="text-blue-600" />
           </div>
-          <p className="font-medium mb-2">No contact fields yet</p>
-          <p className="text-sm">Click "Add Field" to add your contact information</p>
+          <p className="font-medium mb-2">{t('noContactFields')}</p>
+          <p className="text-sm">{t('noContactFieldsHint')}</p>
         </div>
       )}
     </div>
